@@ -1038,32 +1038,28 @@ sensor:
       then:
         - light.turn_on: screen_backlight
         - lambda: |-
-                id(lightTO) = 0;
-                id(Vol) -= 0.05;
-                if(id(Vol) < 0) id(Vol) = 0;
-                id(volume_display_active) = true;
-                id(volume_display_timer) = 0;
-                id(mute) = false;
-        - media_player.volume_set:
-                id: speaker_media_player
-                volume: !lambda return id(Vol);
-        - delay: 400ms         
+            id(lightTO) = 0;
+            id(volume_display_active) = true;
+            id(volume_display_timer) = 0;
+            id(mute) = false;
+        - script.execute:
+            id: set_volume_script
+            new_volume: !lambda 'return clamp(id(Vol) - 0.05, 0.0, 1.0);'
+        - delay: 400ms
         - script.execute: schedule_volume_update
-        - script.execute: reset_display        
+        - script.execute: reset_display
     on_clockwise:
       then:
         - light.turn_on: screen_backlight
         - lambda: |-
-                id(lightTO) = 0;
-                id(Vol) += 0.05;
-                if(id(Vol) > 1) id(Vol) = 1;
-                id(volume_display_active) = true;
-                id(volume_display_timer) = 0;
-                id(mute) = false;
-        - media_player.volume_set:
-                id: speaker_media_player
-                volume: !lambda return id(Vol);
-        - delay: 400ms        
+            id(lightTO) = 0;
+            id(volume_display_active) = true;
+            id(volume_display_timer) = 0;
+            id(mute) = false;
+        - script.execute:
+            id: set_volume_script
+            new_volume: !lambda 'return clamp(id(Vol) + 0.05, 0.0, 1.0);'
+        - delay: 400ms
         - script.execute: schedule_volume_update
         - script.execute: reset_display
   - platform: rotary_encoder
@@ -1436,6 +1432,16 @@ text_sensor:
 # Scripts
 
 script:
+  - id: set_volume_script
+    parameters:
+      new_volume: float
+    then:
+      - globals.set:
+          id: Vol
+          value: !lambda return new_volume;
+      - media_player.volume_set:
+          id: speaker_media_player
+          volume: !lambda return new_volume;
 
   - id: jack_detect_high
     then:
