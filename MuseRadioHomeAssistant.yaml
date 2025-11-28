@@ -330,6 +330,7 @@ globals:
   - id: Vol
     type: float
     initial_value: '0.6'
+    restore_value: yes
   - id: phase
     type: int
     initial_value: '0'
