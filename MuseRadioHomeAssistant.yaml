@@ -65,6 +65,9 @@ external_components:
   - source: github://RASPIAUDIO/esphomeRadio@main
     components: [es8388]
     refresh: 0s
+  - source:
+      type: local
+      path: custom_components
 
 api:
 # on_client_connected:
@@ -324,6 +327,7 @@ light:
     restore_mode: ALWAYS_ON
 
 globals:
+  id: all_globals
   - id: lightTO
     type: int
     initial_value: '0'
@@ -1439,7 +1443,7 @@ script:
       - globals.set:
           id: Vol
           value: !lambda return new_volume;
-      - globals.save:
+      - globals.save_to_flash: all_globals
       - media_player.volume_set:
           id: speaker_media_player
           volume: !lambda return new_volume;
