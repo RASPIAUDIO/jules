@@ -1439,6 +1439,7 @@ script:
       - globals.set:
           id: Vol
           value: !lambda return new_volume;
+      - globals.save:
       - media_player.volume_set:
           id: speaker_media_player
           volume: !lambda return new_volume;
